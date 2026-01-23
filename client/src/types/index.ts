@@ -286,6 +286,8 @@ export interface PurchaseOrder {
   totalAmount: number;
   status: POStatus;
   notes?: string;
+  paymentTerms?: string;
+  shippingAddress?: string;
   terms?: string;
   items: POItem[];
 }
