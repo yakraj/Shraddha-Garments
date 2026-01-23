@@ -104,10 +104,10 @@ app.use(
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({ 
-    success: false, 
+  res.status(404).json({
+    success: false,
     message: "Express: Route not found",
-    path: req.url 
+    path: req.url,
   });
 });
 
