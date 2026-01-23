@@ -45,7 +45,10 @@ export const authAPI = {
   register: (data: any) => api.post<any, any>("/auth/register", data),
   me: () => api.get<any, any>("/auth/me"),
   changePassword: (currentPassword: string, newPassword: string) =>
-    api.post<any, any>("/auth/change-password", { currentPassword, newPassword }),
+    api.post<any, any>("/auth/change-password", {
+      currentPassword,
+      newPassword,
+    }),
 };
 
 // Users API
@@ -61,7 +64,8 @@ export const employeesAPI = {
   getAll: (params?: any) => api.get<any, any>("/employees", { params }),
   getById: (id: string) => api.get<any, any>(`/employees/${id}`),
   create: (data: any) => api.post<any, any>("/employees", data),
-  update: (id: string, data: any) => api.put<any, any>(`/employees/${id}`, data),
+  update: (id: string, data: any) =>
+    api.put<any, any>(`/employees/${id}`, data),
   delete: (id: string) => api.delete<any, any>(`/employees/${id}`),
   getDepartments: () => api.get<any, any>("/employees/meta/departments"),
 };
@@ -71,8 +75,10 @@ export const attendanceAPI = {
   getAll: (params?: any) => api.get<any, any>("/attendance", { params }),
   getToday: () => api.get<any, any>("/attendance/today"),
   mark: (data: any) => api.post<any, any>("/attendance", data),
-  bulkMark: (records: any[]) => api.post<any, any>("/attendance/bulk", { records }),
-  getReport: (params: any) => api.get<any, any>("/attendance/report", { params }),
+  bulkMark: (records: any[]) =>
+    api.post<any, any>("/attendance/bulk", { records }),
+  getReport: (params: any) =>
+    api.get<any, any>("/attendance/report", { params }),
 };
 
 // Machines API
@@ -80,8 +86,7 @@ export const machinesAPI = {
   getAll: (params?: any) => api.get<any, any>("/machines", { params }),
   getById: (id: string) => api.get<any, any>(`/machines/${id}`),
   create: (data: any) => api.post<any, any>("/machines", data),
-  update: (id: string, data: any) =>
-    api.put<any, any>(`/machines/${id}`, data),
+  update: (id: string, data: any) => api.put<any, any>(`/machines/${id}`, data),
   delete: (id: string) => api.delete<any, any>(`/machines/${id}`),
   assign: (id: string, employeeId: string) =>
     api.post<any, any>(`/machines/${id}/assign`, { employeeId }),
@@ -186,7 +191,8 @@ export const notificationsAPI = {
   markAllRead: () => api.put<any, any>("/notifications/read-all"),
   delete: (id: string) => api.delete<any, any>(`/notifications/${id}`),
   create: (data: any) => api.post<any, any>("/notifications", data),
-  broadcast: (data: any) => api.post<any, any>("/notifications/broadcast", data),
+  broadcast: (data: any) =>
+    api.post<any, any>("/notifications/broadcast", data),
 };
 
 // Settings API
