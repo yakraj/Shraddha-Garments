@@ -4,22 +4,22 @@ import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 
 // Import routes
-import authRoutes from "./routes/auth.js";
-import userRoutes from "./routes/users.js";
-import employeeRoutes from "./routes/employees.js";
-import attendanceRoutes from "./routes/attendance.js";
-import machineRoutes from "./routes/machines.js";
-import materialRoutes from "./routes/materials.js";
-import customerRoutes from "./routes/customers.js";
-import supplierRoutes from "./routes/suppliers.js";
-import invoiceRoutes from "./routes/invoices.js";
-import purchaseOrderRoutes from "./routes/purchaseOrders.js";
-import measurementRoutes from "./routes/measurements.js";
-import analyticsRoutes from "./routes/analytics.js";
-import notificationRoutes from "./routes/notifications.js";
-import settingsRoutes from "./routes/settings.js";
-import hsnRoutes from "./routes/hsn.js";
-import fabricRoutes from "./routes/fabrics.js";
+import authRoutes from "./routes/auth";
+import userRoutes from "./routes/users";
+import employeeRoutes from "./routes/employees";
+import attendanceRoutes from "./routes/attendance";
+import machineRoutes from "./routes/machines";
+import materialRoutes from "./routes/materials";
+import customerRoutes from "./routes/customers";
+import supplierRoutes from "./routes/suppliers";
+import invoiceRoutes from "./routes/invoices";
+import purchaseOrderRoutes from "./routes/purchaseOrders";
+import measurementRoutes from "./routes/measurements";
+import analyticsRoutes from "./routes/analytics";
+import notificationRoutes from "./routes/notifications";
+import settingsRoutes from "./routes/settings";
+import hsnRoutes from "./routes/hsn";
+import fabricRoutes from "./routes/fabrics";
 
 dotenv.config();
 
