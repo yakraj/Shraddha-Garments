@@ -2,18 +2,18 @@
   "version": 2,
   "functions": {
     "server/src/index.ts": {
-      "runtime": "@vercel/node",
+      "maxDuration": 10,
       "includeFiles": "server/prisma/**"
     }
   },
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/:path*",
       "destination": "/server/src/index.ts"
     },
     {
       "source": "/(.*)",
-      "destination": "/client/$1"
+      "destination": "/client/index.html"
     }
   ]
 }

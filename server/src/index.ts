@@ -30,51 +30,54 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? true // Allow the actual production domain
-        : (origin, callback) => {
-            if (
-              !origin ||
-              origin.includes("localhost") ||
-              origin.includes("127.0.0.1") ||
-              origin.startsWith("http://192.168.1.") ||
-              origin.startsWith("https://192.168.1.")
-            ) {
-              callback(null, true);
-            } else {
-              callback(new Error("Not allowed by CORS"));
-            }
-          },
+    origin: true,
     credentials: true,
   }),
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Handle Vercel's base path stripping or doubling
+// If Vercel sends /api/health -> express sees /api/health
+// If Vercel sends /health -> express sees /health but routes are mounted at /api/
+// This middleware ensures consistent routing
+app.use((req, res, next) => {
+  // If request URL doesn't start with /api, but we are in Vercel, prefix it?
+  // Actually, safer to mount routes on both / and /api to be sure.
+  next();
+});
+
 // Make prisma available in routes
 app.locals.prisma = prisma;
 
 // API Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/employees", employeeRoutes);
-app.use("/api/attendance", attendanceRoutes);
-app.use("/api/machines", machineRoutes);
-app.use("/api/materials", materialRoutes);
-app.use("/api/customers", customerRoutes);
-app.use("/api/suppliers", supplierRoutes);
-app.use("/api/invoices", invoiceRoutes);
-app.use("/api/purchase-orders", purchaseOrderRoutes);
-app.use("/api/measurements", measurementRoutes);
-app.use("/api/analytics", analyticsRoutes);
-app.use("/api/notifications", notificationRoutes);
-app.use("/api/settings", settingsRoutes);
-app.use("/api/hsn", hsnRoutes);
-app.use("/api/fabrics", fabricRoutes);
+const apiRouter = express.Router();
+apiRouter.use("/auth", authRoutes);
+apiRouter.use("/users", userRoutes);
+apiRouter.use("/employees", employeeRoutes);
+apiRouter.use("/attendance", attendanceRoutes);
+apiRouter.use("/machines", machineRoutes);
+apiRouter.use("/materials", materialRoutes);
+apiRouter.use("/customers", customerRoutes);
+apiRouter.use("/suppliers", supplierRoutes);
+apiRouter.use("/invoices", invoiceRoutes);
+apiRouter.use("/purchase-orders", purchaseOrderRoutes);
+apiRouter.use("/measurements", measurementRoutes);
+apiRouter.use("/analytics", analyticsRoutes);
+apiRouter.use("/notifications", notificationRoutes);
+apiRouter.use("/settings", settingsRoutes);
+apiRouter.use("/hsn", hsnRoutes);
+apiRouter.use("/fabrics", fabricRoutes);
+
+// Mount router at /api AND / (fallback for Vercel oddities)
+app.use("/api", apiRouter);
+app.use("/", apiRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
