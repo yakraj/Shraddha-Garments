@@ -4,12 +4,27 @@ import { useAuthStore } from "../store/authStore";
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 // Create a customized Axios instance type that reflects our unwrapped response interceptor
-interface CustomAxiosInstance extends Omit<AxiosInstance, "get" | "post" | "put" | "delete" | "patch"> {
+interface CustomAxiosInstance extends Omit<
+  AxiosInstance,
+  "get" | "post" | "put" | "delete" | "patch"
+> {
   get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
-  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
-  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
+  post<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T>;
+  put<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T>;
   delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
-  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
+  patch<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T>;
 }
 
 const apiInstance = axios.create({
@@ -74,8 +89,7 @@ export const employeesAPI = {
   getAll: (params?: any) => api.get("/employees", { params }),
   getById: (id: string) => api.get(`/employees/${id}`),
   create: (data: any) => api.post("/employees", data),
-  update: (id: string, data: any) =>
-    api.put(`/employees/${id}`, data),
+  update: (id: string, data: any) => api.put(`/employees/${id}`, data),
   delete: (id: string) => api.delete(`/employees/${id}`),
   getDepartments: () => api.get("/employees/meta/departments"),
 };
@@ -85,10 +99,8 @@ export const attendanceAPI = {
   getAll: (params?: any) => api.get("/attendance", { params }),
   getToday: () => api.get("/attendance/today"),
   mark: (data: any) => api.post("/attendance", data),
-  bulkMark: (records: any[]) =>
-    api.post("/attendance/bulk", { records }),
-  getReport: (params: any) =>
-    api.get("/attendance/report", { params }),
+  bulkMark: (records: any[]) => api.post("/attendance/bulk", { records }),
+  getReport: (params: any) => api.get("/attendance/report", { params }),
 };
 
 // Machines API
@@ -111,8 +123,7 @@ export const materialsAPI = {
   getAll: (params?: any) => api.get("/materials", { params }),
   getById: (id: string) => api.get(`/materials/${id}`),
   create: (data: any) => api.post("/materials", data),
-  update: (id: string, data: any) =>
-    api.put(`/materials/${id}`, data),
+  update: (id: string, data: any) => api.put(`/materials/${id}`, data),
   delete: (id: string) => api.delete(`/materials/${id}`),
   addTransaction: (id: string, data: any) =>
     api.post(`/materials/${id}/transaction`, data),
@@ -125,8 +136,7 @@ export const customersAPI = {
   getAll: (params?: any) => api.get("/customers", { params }),
   getById: (id: string) => api.get(`/customers/${id}`),
   create: (data: any) => api.post("/customers", data),
-  update: (id: string, data: any) =>
-    api.put(`/customers/${id}`, data),
+  update: (id: string, data: any) => api.put(`/customers/${id}`, data),
   delete: (id: string) => api.delete(`/customers/${id}`),
 };
 
@@ -135,8 +145,7 @@ export const suppliersAPI = {
   getAll: (params?: any) => api.get("/suppliers", { params }),
   getById: (id: string) => api.get(`/suppliers/${id}`),
   create: (data: any) => api.post("/suppliers", data),
-  update: (id: string, data: any) =>
-    api.put(`/suppliers/${id}`, data),
+  update: (id: string, data: any) => api.put(`/suppliers/${id}`, data),
   delete: (id: string) => api.delete(`/suppliers/${id}`),
 };
 
@@ -157,8 +166,7 @@ export const purchaseOrdersAPI = {
   getAll: (params?: any) => api.get("/purchase-orders", { params }),
   getById: (id: string) => api.get(`/purchase-orders/${id}`),
   create: (data: any) => api.post("/purchase-orders", data),
-  update: (id: string, data: any) =>
-    api.put(`/purchase-orders/${id}`, data),
+  update: (id: string, data: any) => api.put(`/purchase-orders/${id}`, data),
   delete: (id: string) => api.delete(`/purchase-orders/${id}`),
   receive: (id: string, items: any[]) =>
     api.post(`/purchase-orders/${id}/receive`, { items }),
@@ -171,8 +179,7 @@ export const measurementsAPI = {
   getAll: (params?: any) => api.get("/measurements", { params }),
   getById: (id: string) => api.get(`/measurements/${id}`),
   create: (data: any) => api.post("/measurements", data),
-  update: (id: string, data: any) =>
-    api.put(`/measurements/${id}`, data),
+  update: (id: string, data: any) => api.put(`/measurements/${id}`, data),
   delete: (id: string) => api.delete(`/measurements/${id}`),
   getByCustomer: (customerId: string) =>
     api.get(`/measurements/customer/${customerId}`),
@@ -201,8 +208,7 @@ export const notificationsAPI = {
   markAllRead: () => api.put("/notifications/read-all"),
   delete: (id: string) => api.delete(`/notifications/${id}`),
   create: (data: any) => api.post("/notifications", data),
-  broadcast: (data: any) =>
-    api.post("/notifications/broadcast", data),
+  broadcast: (data: any) => api.post("/notifications/broadcast", data),
 };
 
 // Settings API
@@ -235,4 +241,3 @@ export const fabricsAPI = {
     }),
   delete: (id: string) => api.delete(`/fabrics/${id}`),
 };
-
