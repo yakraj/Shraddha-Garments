@@ -7,9 +7,9 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "echo 'Skipping server build for Vercel'",
-    "postinstall": "./node_modules/.bin/prisma generate",
+    "postinstall": "npx prisma@5.10.0 generate",
     "start": "node dist/index.js",
-    "prisma:generate": "./node_modules/.bin/prisma generate",
+    "prisma:generate": "npx prisma@5.10.0 generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "seed": "tsx prisma/seed.ts"
