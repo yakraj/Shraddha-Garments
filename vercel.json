@@ -1,22 +1,19 @@
 {
   "version": 2,
   "functions": {
-    "api/*.ts": {
-      "runtime": "@vercel/node"
+    "api/index.ts": {
+      "maxDuration": 10,
+      "memory": 1024
     }
   },
   "rewrites": [
     {
-      "source": "/api/vercel-check",
-      "destination": "/api/index.ts"
-    },
-    {
       "source": "/api/(.*)",
-      "destination": "/api/index.ts"
+      "destination": "/api/index"
     },
     {
       "source": "/(.*)",
-      "destination": "/client/index.html"
+      "destination": "/index.html"
     }
   ]
 }
