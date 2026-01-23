@@ -1,15 +1,9 @@
 {
   "version": 2,
-  "functions": {
-    "server/src/index.ts": {
-      "maxDuration": 10,
-      "includeFiles": "server/prisma/**"
-    }
-  },
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/server/src/index.ts"
+      "source": "/api/(.*)",
+      "destination": "/api/index"
     },
     {
       "source": "/(.*)",
