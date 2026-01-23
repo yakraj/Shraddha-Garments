@@ -33,8 +33,8 @@ router.post("/", upload.single("image"), async (req, res) => {
       return res.status(400).json({ error: "Code is required" });
     }
 
-    // Upload to Cloudinary
-    const imageUrl = await uploadToCloudinary(file.path);
+    // Upload to Cloudinary using the file buffer
+    const imageUrl = await uploadToCloudinary(file.buffer);
 
     const fabric = await prisma.fabricType.create({
       data: {

@@ -10,24 +10,35 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const uploadToCloudinary = async (filePath: string) => {
-  try {
-    const result = await cloudinary.uploader.upload(filePath, {
-      folder: "shraddha-garments/fabrics",
-      resource_type: "image",
-    });
-
-    // Remove file from local storage after upload
-    fs.unlinkSync(filePath);
-
-    return result.secure_url;
-  } catch (error) {
-    // Remove file even if upload fails
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+export const uploadToCloudinary = async (
+  file: string | Buffer,
+  folder: string = "shraddha-garments/fabrics",
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    if (typeof file === "string") {
+      // If it's a file path
+      cloudinary.uploader
+        .upload(file, { folder, resource_type: "auto" })
+        .then((result) => {
+          if (fs.existsSync(file)) fs.unlinkSync(file);
+          resolve(result.secure_url);
+        })
+        .catch((error) => {
+          if (fs.existsSync(file)) fs.unlinkSync(file);
+          reject(error);
+        });
+    } else {
+      // If it's a Buffer (optimized for Vercel)
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder, resource_type: "auto" },
+        (error, result) => {
+          if (error) return reject(error);
+          if (result) resolve(result.secure_url);
+        },
+      );
+      uploadStream.end(file);
     }
-    throw error;
-  }
+  });
 };
 
 export default cloudinary;
