@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "HSN" ADD COLUMN     "taxRate" DECIMAL(5,2) NOT NULL DEFAULT 5.00;
+
+-- AlterTable
+ALTER TABLE "InvoiceItem" ADD COLUMN     "taxRate" DECIMAL(5,2) NOT NULL DEFAULT 5.00;
