@@ -100,11 +100,13 @@ app.use((req, res) => {
   res.status(404).json({ success: false, message: "Route not found" });
 });
 
-// Start server
-app.listen(Number(PORT), "0.0.0.0", () => {
-  console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
-});
+// Start server only when not running on Vercel
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+  app.listen(Number(PORT), "0.0.0.0", () => {
+    console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
+    console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
+  });
+}
 
 // Graceful shutdown
 process.on("SIGINT", async () => {

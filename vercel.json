@@ -1,18 +1,11 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "client/package.json",
-      "use": "@vercel/static-build"
-    },
-    {
-      "src": "server/src/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["server/prisma/**"]
-      }
+  "functions": {
+    "server/src/index.ts": {
+      "runtime": "@vercel/node",
+      "includeFiles": "server/prisma/**"
     }
-  ],
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
