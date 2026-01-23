@@ -2,8 +2,12 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/api/vercel-check",
+      "destination": "/api/index.ts"
+    },
+    {
       "source": "/api/(.*)",
-      "destination": "/api/index"
+      "destination": "/api/index.ts"
     },
     {
       "source": "/(.*)",

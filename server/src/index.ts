@@ -50,6 +50,10 @@ app.use((req, res, next) => {
 // Make prisma available in routes
 app.locals.prisma = prisma;
 
+app.get("/", (req, res) => {
+  res.json({ message: "Express server is running", version: "1.0.1" });
+});
+
 // API Routes
 const apiRouter = express.Router();
 apiRouter.use("/auth", authRoutes);
@@ -100,7 +104,11 @@ app.use(
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({ success: false, message: "Route not found" });
+  res.status(404).json({ 
+    success: false, 
+    message: "Express: Route not found",
+    path: req.url 
+  });
 });
 
 // Start server only when not running on Vercel

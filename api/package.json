@@ -1,6 +1,7 @@
 {
   "name": "api-function",
   "version": "1.0.0",
+  "type": "module",
   "dependencies": {
     "@prisma/client": "^5.10.0",
     "bcryptjs": "^2.4.3",
