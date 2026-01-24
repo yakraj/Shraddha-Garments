@@ -219,13 +219,14 @@ export default function AddFabricModal({
 
   const handleCameraError = useCallback((error: string | DOMException) => {
     console.error("Camera error:", error);
-    
+
     let errorMessage = "Unable to access camera. ";
-    
+
     if (error instanceof DOMException) {
       switch (error.name) {
         case "NotAllowedError":
-          errorMessage += "Camera permission was denied. Please allow camera access and try again.";
+          errorMessage +=
+            "Camera permission was denied. Please allow camera access and try again.";
           break;
         case "NotFoundError":
           errorMessage += "No camera found on this device.";
@@ -245,7 +246,7 @@ export default function AddFabricModal({
     } else {
       errorMessage += String(error);
     }
-    
+
     toast.error(errorMessage);
     setIsCameraOpen(false);
   }, []);
