@@ -6,8 +6,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "echo 'Skipping server build for Vercel'",
-    "vercel-build": "tsx src/index.ts",
+    "build": "npx prisma@5.10.0 generate",
+    "vercel-build": "npx prisma@5.10.0 generate",
     "postinstall": "npx prisma@5.10.0 generate",
     "start": "node dist/index.js",
     "prisma:generate": "npx prisma@5.10.0 generate",
@@ -29,7 +29,8 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "uuid": "^9.0.1",
-    "prisma": "5.10.0"
+    "prisma": "5.10.0",
+    "tsx": "^4.7.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -39,7 +40,6 @@
     "@types/multer": "^1.4.11",
     "@types/node": "^20.11.19",
     "@types/uuid": "^9.0.8",
-    "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   }
 }
