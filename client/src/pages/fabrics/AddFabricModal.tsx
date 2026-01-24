@@ -219,9 +219,34 @@ export default function AddFabricModal({
 
   const handleCameraError = useCallback((error: string | DOMException) => {
     console.error("Camera error:", error);
-    toast.error(
-      "Unable to access camera. If you are using an IP address (like 192.168...), browsers require HTTPS for camera access. Try using 'localhost' or an HTTPS connection.",
-    );
+    
+    let errorMessage = "Unable to access camera. ";
+    
+    if (error instanceof DOMException) {
+      switch (error.name) {
+        case "NotAllowedError":
+          errorMessage += "Camera permission was denied. Please allow camera access and try again.";
+          break;
+        case "NotFoundError":
+          errorMessage += "No camera found on this device.";
+          break;
+        case "NotReadableError":
+          errorMessage += "Camera is being used by another application.";
+          break;
+        case "OverconstrainedError":
+          errorMessage += "Camera doesn't support the required settings.";
+          break;
+        case "SecurityError":
+          errorMessage += "Camera access blocked due to security restrictions.";
+          break;
+        default:
+          errorMessage += `Error: ${error.message}`;
+      }
+    } else {
+      errorMessage += String(error);
+    }
+    
+    toast.error(errorMessage);
     setIsCameraOpen(false);
   }, []);
 
