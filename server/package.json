@@ -6,8 +6,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-      "build": "echo 'Skipping server build for Vercel'",
-      "vercel-build": "tsx src/index.ts",
+    "build": "echo 'Skipping server build for Vercel'",
+    "vercel-build": "tsx src/index.ts",
     "postinstall": "npx prisma@5.10.0 generate",
     "start": "node dist/index.js",
     "prisma:generate": "npx prisma@5.10.0 generate",
