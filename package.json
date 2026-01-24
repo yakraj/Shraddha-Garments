@@ -1,14 +1,38 @@
 {
-  "name": "ujiyala-foundation-root",
-  "private": true,
+  "version": 2,
+  "builds": [
+    {
+      "src": "server/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "client/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server/server.js"
+    },
+    {
+      "src": "/(.*\\.(css|js|html|png|jpg|jpeg|gif|svg|ico|json))",
+      "dest": "/client/$1",
+      "headers": {
+        "cache-control": "s-maxage=31536000, immutable"
+      }
+    },
+    {
+      "src": "/",
+      "dest": "/client/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/index.html"
+    }
+  ],
   "scripts": {
-    "start": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
-    "vercel-build": "npm --prefix client run build && npm --prefix server run build"
-  },
-  "devDependencies": {
-    "concurrently": "^8.0.0"
-  },
-  "dependencies": {
-    "html2pdf.js": "^0.12.1"
+    "dev": "concurrently \"npm run dev -w client\" \"npm run dev -w server\"",
+    "build": "node node_modules/.bin/vite build ./client --mode production"
   }
 }
