@@ -12,7 +12,7 @@
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api" },
+    { "src": "/api/(.*)", "dest": "/api/index.ts" },
     {
       "src": "/(.*\\.(ico|js|css|png|jpg|jpeg|svg|webp|ttf|woff2?))$",
       "dest": "/client/$1"
