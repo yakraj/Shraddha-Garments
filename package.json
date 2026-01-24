@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
-    "vercel-build": "npm --prefix client run build && npm --prefix server run vercel-build"
+    "vercel-build": "vite build"
   },
   "devDependencies": {
     "concurrently": "^8.0.0"
