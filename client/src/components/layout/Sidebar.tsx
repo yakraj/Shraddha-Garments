@@ -42,6 +42,13 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ open, setOpen }: SidebarProps) {
+  const handleNavClick = () => {
+    // Close sidebar on mobile when a nav item is clicked
+    if (open) {
+      setOpen(false);
+    }
+  };
+
   return (
     <>
       {/* Mobile sidebar */}
@@ -94,7 +101,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                   </div>
                 </Transition.Child>
 
-                <SidebarContent />
+                <SidebarContent onNavClick={handleNavClick} />
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -103,13 +110,13 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-        <SidebarContent />
+        <SidebarContent onNavClick={() => {}} />
       </div>
     </>
   );
 }
 
-function SidebarContent() {
+function SidebarContent({ onNavClick }: { onNavClick: () => void }) {
   return (
     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white border-r border-gray-200 px-6 pb-4">
       {/* Logo */}
@@ -130,6 +137,7 @@ function SidebarContent() {
             <li key={item.name}>
               <NavLink
                 to={item.href}
+                onClick={onNavClick}
                 className={({ isActive }) =>
                   cn(
                     "sidebar-item",

@@ -232,8 +232,15 @@ export default function AddFabricModal({
           errorMessage += "No camera found on this device.";
           break;
         case "NotReadableError":
-          errorMessage += "Camera is being used by another application.";
-          break;
+          errorMessage += "Camera is being used by another application. Please try again in a moment.";
+          // Auto-retry after a short delay for NotReadableError
+          setTimeout(() => {
+            console.log("Retrying camera access after NotReadableError...");
+            setIsCameraOpen(false);
+            // Small delay before retrying
+            setTimeout(() => setIsCameraOpen(true), 100);
+          }, 1000);
+          return; // Don't show error toast for auto-retry case
         case "OverconstrainedError":
           errorMessage += "Camera doesn't support the required settings.";
           break;
