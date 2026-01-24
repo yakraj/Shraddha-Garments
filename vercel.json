@@ -1,19 +1,22 @@
 {
   "version": 2,
-  "functions": {
-    "api/index.ts": {
-      "maxDuration": 10,
-      "memory": 1024
-    }
-  },
-  "rewrites": [
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/index"
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "server/api/**/*.js",
+      "use": "@vercel/node"
     }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/server/api/index.js" },
+    {
+      "src": "/(.*\\.(?:ico|js|css|png|jpg|jpeg|svg|webp|ttf|woff2?))$",
+      "dest": "/client/$1"
+    },
+    { "src": "/(.*)", "dest": "/client/index.html" }
   ]
 }
