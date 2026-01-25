@@ -144,7 +144,9 @@ export default function CreateInvoice() {
     if (invoice) {
       // Pre-populate form with invoice data
       console.log("Invoice data loaded:", invoice);
-      reset({
+      
+      // Reset entire form with invoice data
+      const formData = {
         customerId: invoice.customerId,
         customerName: invoice.customer?.name || "",
         customerEmail: invoice.customer?.email || "",
@@ -187,9 +189,47 @@ export default function CreateInvoice() {
           discount: Number(item.discount || 0),
           taxRate: Number(item.taxRate || 18),
         })),
-      });
+      };
+
+      console.log("Resetting form with data:", formData);
+      reset(formData);
+      
+      // Additional setValue calls for critical fields to ensure they're set
+      setTimeout(() => {
+        setValue("invoiceDate", formData.invoiceDate);
+        setValue("dueDate", formData.dueDate);
+        setValue("customerId", formData.customerId);
+        setValue("customerName", formData.customerName);
+        setValue("customerEmail", formData.customerEmail);
+        setValue("customerPhone", formData.customerPhone);
+        setValue("customerAddress", formData.customerAddress);
+        setValue("customerCity", formData.customerCity);
+        setValue("customerState", formData.customerState);
+        setValue("customerPincode", formData.customerPincode);
+        setValue("customerGst", formData.customerGst);
+        setValue("customerPan", formData.customerPan);
+        setValue("notes", formData.notes);
+        setValue("terms", formData.terms);
+        setValue("shippingAddress", formData.shippingAddress);
+        setValue("discountType", formData.discountType);
+        setValue("discountValue", formData.discountValue);
+        setValue("taxRate", formData.taxRate);
+        setValue("deliveryNote", formData.deliveryNote);
+        setValue("deliveryNoteDate", formData.deliveryNoteDate);
+        setValue("otherReference", formData.otherReference);
+        setValue("otherReferences", formData.otherReferences);
+        setValue("buyersOrderNo", formData.buyersOrderNo);
+        setValue("buyersOrderDate", formData.buyersOrderDate);
+        setValue("dispatchDocNo", formData.dispatchDocNo);
+        setValue("dispatchedThrough", formData.dispatchedThrough);
+        setValue("destination", formData.destination);
+        setValue("billOfLading", formData.billOfLading);
+        setValue("motorVehicleNo", formData.motorVehicleNo);
+        setValue("termsOfDelivery", formData.termsOfDelivery);
+        console.log("Individual setValue calls completed");
+      }, 100);
     }
-  }, [invoice, reset]);
+  }, [invoice, reset, setValue]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -726,7 +766,8 @@ export default function CreateInvoice() {
             </button>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200">
@@ -866,6 +907,164 @@ export default function CreateInvoice() {
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {fields.map((field, index) => {
+              const item = watchItems[index];
+              const itemTotal = (item?.quantity || 0) * (item?.unitPrice || 0);
+              const itemDiscount = itemTotal * ((item?.discount || 0) / 100);
+              const itemAmount = itemTotal - itemDiscount;
+
+              return (
+                <div
+                  key={field.id}
+                  className="border border-gray-200 rounded-lg p-3 bg-gray-50"
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-sm font-medium text-gray-700">
+                      Item #{index + 1}
+                    </span>
+                    {fields.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="space-y-3">
+                    {/* Description */}
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">
+                        Description
+                      </label>
+                      <input
+                        {...register(`items.${index}.description` as const, {
+                          required: "Required",
+                        })}
+                        placeholder="Item description"
+                        className="input text-sm w-full"
+                      />
+                    </div>
+
+                    {/* HSN Code */}
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">
+                        HSN/SAC
+                      </label>
+                      <select
+                        {...register(`items.${index}.hsnCode` as const)}
+                        onChange={(e) => {
+                          const code = e.target.value;
+                          setValue(`items.${index}.hsnCode`, code);
+                          const selectedHsn = hsns?.find(
+                            (h: any) => h.code === code,
+                          );
+                          if (selectedHsn) {
+                            setValue(
+                              `items.${index}.taxRate`,
+                              Number(selectedHsn.taxRate),
+                            );
+                          }
+                        }}
+                        className="input text-sm w-full"
+                      >
+                        <option value="">Select HSN</option>
+                        {hsns?.map((hsn: any) => (
+                          <option key={hsn.code} value={hsn.code}>
+                            {hsn.code} - {hsn.description} ({hsn.taxRate}%)
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Quantity and Unit Price Row */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">
+                          Quantity
+                        </label>
+                        <input
+                          type="number"
+                          {...register(`items.${index}.quantity` as const, {
+                            valueAsNumber: true,
+                            min: 1,
+                          })}
+                          className="input text-sm w-full"
+                          min="1"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">
+                          Unit Price
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          {...register(`items.${index}.unitPrice` as const, {
+                            valueAsNumber: true,
+                            min: 0,
+                          })}
+                          className="input text-sm w-full"
+                          min="0"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Discount and Tax Rate Row */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">
+                          Discount %
+                        </label>
+                        <input
+                          type="number"
+                          {...register(`items.${index}.discount` as const, {
+                            valueAsNumber: true,
+                            min: 0,
+                            max: 100,
+                          })}
+                          className="input text-sm w-full"
+                          min="0"
+                          max="100"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">
+                          Tax Rate %
+                        </label>
+                        <input
+                          type="number"
+                          {...register(`items.${index}.taxRate` as const, {
+                            valueAsNumber: true,
+                            min: 0,
+                          })}
+                          className="input text-sm w-full"
+                          min="0"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Amount Display */}
+                    <div className="pt-2 border-t border-gray-200">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-700">
+                          Amount:
+                        </span>
+                        <span className="text-lg font-semibold text-gray-900">
+                          {formatCurrency(itemAmount)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
