@@ -144,7 +144,7 @@ export default function CreateInvoice() {
     if (invoice) {
       // Pre-populate form with invoice data
       console.log("Invoice data loaded:", invoice);
-      
+
       // Reset entire form with invoice data
       const formData = {
         customerId: invoice.customerId,
@@ -193,7 +193,7 @@ export default function CreateInvoice() {
 
       console.log("Resetting form with data:", formData);
       reset(formData);
-      
+
       // Additional setValue calls for critical fields to ensure they're set
       setTimeout(() => {
         setValue("invoiceDate", formData.invoiceDate);
