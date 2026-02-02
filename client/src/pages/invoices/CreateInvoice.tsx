@@ -816,9 +816,12 @@ export default function CreateInvoice() {
                       <tr key={field.id} className="border-b border-gray-100">
                         <td className="py-2 pr-2">
                           <input
-                            {...register(`items.${index}.description` as const, {
-                              required: "Required",
-                            })}
+                            {...register(
+                              `items.${index}.description` as const,
+                              {
+                                required: "Required",
+                              },
+                            )}
                             placeholder="Item description"
                             className="input text-sm"
                           />
@@ -850,69 +853,69 @@ export default function CreateInvoice() {
                           </select>
                         </td>
                         <td className="py-2 pr-2">
-                        <input
-                          type="number"
-                          {...register(`items.${index}.quantity` as const, {
-                            valueAsNumber: true,
-                            min: 1,
-                          })}
-                          className="input text-sm"
-                          min="1"
-                        />
-                      </td>
-                      <td className="py-2 pr-2">
-                        <input
-                          type="number"
-                          step="0.01"
-                          {...register(`items.${index}.unitPrice` as const, {
-                            valueAsNumber: true,
-                            min: 0,
-                          })}
-                          className="input text-sm"
-                          min="0"
-                        />
-                      </td>
-                      <td className="py-2 pr-2">
-                        <input
-                          type="number"
-                          {...register(`items.${index}.discount` as const, {
-                            valueAsNumber: true,
-                            min: 0,
-                            max: 100,
-                          })}
-                          className="input text-sm"
-                          min="0"
-                          max="100"
-                        />
-                      </td>
-                      <td className="py-2 pr-2">
-                        <input
-                          type="number"
-                          {...register(`items.${index}.taxRate` as const, {
-                            valueAsNumber: true,
-                            min: 0,
-                          })}
-                          className="input text-sm"
-                          min="0"
-                        />
-                      </td>
-                      <td className="py-2 text-right font-medium">
-                        {formatCurrency(itemAmount)}
-                      </td>
-                      <td className="py-2 pl-2">
-                        {fields.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => remove(index)}
-                            className="p-1 text-red-500 hover:bg-red-50 rounded"
-                          >
-                            <TrashIcon className="h-4 w-4" />
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
+                          <input
+                            type="number"
+                            {...register(`items.${index}.quantity` as const, {
+                              valueAsNumber: true,
+                              min: 1,
+                            })}
+                            className="input text-sm"
+                            min="1"
+                          />
+                        </td>
+                        <td className="py-2 pr-2">
+                          <input
+                            type="number"
+                            step="0.01"
+                            {...register(`items.${index}.unitPrice` as const, {
+                              valueAsNumber: true,
+                              min: 0,
+                            })}
+                            className="input text-sm"
+                            min="0"
+                          />
+                        </td>
+                        <td className="py-2 pr-2">
+                          <input
+                            type="number"
+                            {...register(`items.${index}.discount` as const, {
+                              valueAsNumber: true,
+                              min: 0,
+                              max: 100,
+                            })}
+                            className="input text-sm"
+                            min="0"
+                            max="100"
+                          />
+                        </td>
+                        <td className="py-2 pr-2">
+                          <input
+                            type="number"
+                            {...register(`items.${index}.taxRate` as const, {
+                              valueAsNumber: true,
+                              min: 0,
+                            })}
+                            className="input text-sm"
+                            min="0"
+                          />
+                        </td>
+                        <td className="py-2 text-right font-medium">
+                          {formatCurrency(itemAmount)}
+                        </td>
+                        <td className="py-2 pl-2">
+                          {fields.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => remove(index)}
+                              className="p-1 text-red-500 hover:bg-red-50 rounded"
+                            >
+                              <TrashIcon className="h-4 w-4" />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -923,7 +926,8 @@ export default function CreateInvoice() {
             <div className="md:hidden space-y-4">
               {fields.map((field, index) => {
                 const item = watchItems[index];
-                const itemTotal = (item?.quantity || 0) * (item?.unitPrice || 0);
+                const itemTotal =
+                  (item?.quantity || 0) * (item?.unitPrice || 0);
                 const itemDiscount = itemTotal * ((item?.discount || 0) / 100);
                 const itemAmount = itemTotal - itemDiscount;
 
@@ -994,90 +998,90 @@ export default function CreateInvoice() {
                       </div>
 
                       {/* Quantity and Unit Price Row */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">
-                          Quantity
-                        </label>
-                        <input
-                          type="number"
-                          {...register(`items.${index}.quantity` as const, {
-                            valueAsNumber: true,
-                            min: 1,
-                          })}
-                          className="input text-sm w-full"
-                          min="1"
-                        />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">
+                            Quantity
+                          </label>
+                          <input
+                            type="number"
+                            {...register(`items.${index}.quantity` as const, {
+                              valueAsNumber: true,
+                              min: 1,
+                            })}
+                            className="input text-sm w-full"
+                            min="1"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">
+                            Unit Price
+                          </label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            {...register(`items.${index}.unitPrice` as const, {
+                              valueAsNumber: true,
+                              min: 0,
+                            })}
+                            className="input text-sm w-full"
+                            min="0"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">
-                          Unit Price
-                        </label>
-                        <input
-                          type="number"
-                          step="0.01"
-                          {...register(`items.${index}.unitPrice` as const, {
-                            valueAsNumber: true,
-                            min: 0,
-                          })}
-                          className="input text-sm w-full"
-                          min="0"
-                        />
-                      </div>
-                    </div>
 
-                    {/* Discount and Tax Rate Row */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">
-                          Discount %
-                        </label>
-                        <input
-                          type="number"
-                          {...register(`items.${index}.discount` as const, {
-                            valueAsNumber: true,
-                            min: 0,
-                            max: 100,
-                          })}
-                          className="input text-sm w-full"
-                          min="0"
-                          max="100"
-                        />
+                      {/* Discount and Tax Rate Row */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">
+                            Discount %
+                          </label>
+                          <input
+                            type="number"
+                            {...register(`items.${index}.discount` as const, {
+                              valueAsNumber: true,
+                              min: 0,
+                              max: 100,
+                            })}
+                            className="input text-sm w-full"
+                            min="0"
+                            max="100"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">
+                            Tax Rate %
+                          </label>
+                          <input
+                            type="number"
+                            {...register(`items.${index}.taxRate` as const, {
+                              valueAsNumber: true,
+                              min: 0,
+                            })}
+                            className="input text-sm w-full"
+                            min="0"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">
-                          Tax Rate %
-                        </label>
-                        <input
-                          type="number"
-                          {...register(`items.${index}.taxRate` as const, {
-                            valueAsNumber: true,
-                            min: 0,
-                          })}
-                          className="input text-sm w-full"
-                          min="0"
-                        />
-                      </div>
-                    </div>
 
-                    {/* Amount Display */}
-                    <div className="pt-2 border-t border-gray-200">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-700">
-                          Amount:
-                        </span>
-                        <span className="text-lg font-semibold text-gray-900">
-                          {formatCurrency(itemAmount)}
-                        </span>
+                      {/* Amount Display */}
+                      <div className="pt-2 border-t border-gray-200">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-700">
+                            Amount:
+                          </span>
+                          <span className="text-lg font-semibold text-gray-900">
+                            {formatCurrency(itemAmount)}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
 
         {/* Summary & Additional Info */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
