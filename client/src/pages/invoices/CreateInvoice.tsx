@@ -67,8 +67,15 @@ export default function CreateInvoice() {
   const [searchParams] = useSearchParams();
   const preselectedCustomerId = searchParams.get("customerId") || "";
   const [query, setQuery] = useState("");
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   const isEdit = Boolean(id);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const { data: customers } = useQuery({
     queryKey: ["customers-list"],
@@ -236,7 +243,7 @@ export default function CreateInvoice() {
     name: "items",
   });
 
-  const watchItems = watch("items");
+  const watchItems = watch("items") || [];
   const watchDiscountType = watch("discountType");
   const watchDiscountValue = watch("discountValue");
 
@@ -767,81 +774,82 @@ export default function CreateInvoice() {
           </div>
 
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-2 text-sm font-medium text-gray-500">
-                    Description
-                  </th>
-                  <th className="text-left py-2 text-sm font-medium text-gray-500 w-24">
-                    HSN/SAC
-                  </th>
-                  <th className="text-left py-2 text-sm font-medium text-gray-500 w-24">
-                    Qty
-                  </th>
-                  <th className="text-left py-2 text-sm font-medium text-gray-500 w-32">
-                    Unit Price
-                  </th>
-                  <th className="text-left py-2 text-sm font-medium text-gray-500 w-24">
-                    Disc %
-                  </th>
-                  <th className="text-left py-2 text-sm font-medium text-gray-500 w-24">
-                    Tax %
-                  </th>
-                  <th className="text-right py-2 text-sm font-medium text-gray-500 w-32">
-                    Amount
-                  </th>
-                  <th className="w-10"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {fields.map((field, index) => {
-                  const item = watchItems[index];
-                  const itemTotal =
-                    (item?.quantity || 0) * (item?.unitPrice || 0);
-                  const itemDiscount =
-                    itemTotal * ((item?.discount || 0) / 100);
-                  const itemAmount = itemTotal - itemDiscount;
+          {!isMobile && (
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-2 text-sm font-medium text-gray-500">
+                      Description
+                    </th>
+                    <th className="text-left py-2 text-sm font-medium text-gray-500 w-24">
+                      HSN/SAC
+                    </th>
+                    <th className="text-left py-2 text-sm font-medium text-gray-500 w-24">
+                      Qty
+                    </th>
+                    <th className="text-left py-2 text-sm font-medium text-gray-500 w-32">
+                      Unit Price
+                    </th>
+                    <th className="text-left py-2 text-sm font-medium text-gray-500 w-24">
+                      Disc %
+                    </th>
+                    <th className="text-left py-2 text-sm font-medium text-gray-500 w-24">
+                      Tax %
+                    </th>
+                    <th className="text-right py-2 text-sm font-medium text-gray-500 w-32">
+                      Amount
+                    </th>
+                    <th className="w-10"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {fields.map((field, index) => {
+                    const item = watchItems[index];
+                    const itemTotal =
+                      (item?.quantity || 0) * (item?.unitPrice || 0);
+                    const itemDiscount =
+                      itemTotal * ((item?.discount || 0) / 100);
+                    const itemAmount = itemTotal - itemDiscount;
 
-                  return (
-                    <tr key={field.id} className="border-b border-gray-100">
-                      <td className="py-2 pr-2">
-                        <input
-                          {...register(`items.${index}.description` as const, {
-                            required: "Required",
-                          })}
-                          placeholder="Item description"
-                          className="input text-sm"
-                        />
-                      </td>
-                      <td className="py-2 pr-2">
-                        <select
-                          {...register(`items.${index}.hsnCode` as const)}
-                          onChange={(e) => {
-                            const code = e.target.value;
-                            setValue(`items.${index}.hsnCode`, code);
-                            const selectedHsn = hsns?.find(
-                              (h: any) => h.code === code,
-                            );
-                            if (selectedHsn) {
-                              setValue(
-                                `items.${index}.taxRate`,
-                                Number(selectedHsn.taxRate),
-                              );
-                            }
-                          }}
-                          className="input text-sm"
-                        >
-                          <option value="">Select HSN</option>
-                          {hsns?.map((hsn: any) => (
-                            <option key={hsn.code} value={hsn.code}>
-                              {hsn.code} - {hsn.description} ({hsn.taxRate}%)
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="py-2 pr-2">
+                    return (
+                      <tr key={field.id} className="border-b border-gray-100">
+                        <td className="py-2 pr-2">
+                          <input
+                            {...register(`items.${index}.description` as const, {
+                              required: "Required",
+                            })}
+                            placeholder="Item description"
+                            className="input text-sm"
+                          />
+                        </td>
+                        <td className="py-2 pr-2">
+                          <select
+                            {...register(`items.${index}.hsnCode` as const, {
+                              onChange: (e) => {
+                                const code = e.target.value;
+                                const selectedHsn = hsns?.find(
+                                  (h: any) => h.code === code,
+                                );
+                                if (selectedHsn) {
+                                  setValue(
+                                    `items.${index}.taxRate`,
+                                    Number(selectedHsn.taxRate),
+                                  );
+                                }
+                              },
+                            })}
+                            className="input text-sm"
+                          >
+                            <option value="">Select HSN</option>
+                            {hsns?.map((hsn: any) => (
+                              <option key={hsn.code} value={hsn.code}>
+                                {hsn.code} - {hsn.description} ({hsn.taxRate}%)
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="py-2 pr-2">
                         <input
                           type="number"
                           {...register(`items.${index}.quantity` as const, {
@@ -905,85 +913,87 @@ export default function CreateInvoice() {
                     </tr>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
+                </tbody>
+              </table>
+            </div>
+          )}
 
           {/* Mobile Card View */}
-          <div className="md:hidden space-y-4">
-            {fields.map((field, index) => {
-              const item = watchItems[index];
-              const itemTotal = (item?.quantity || 0) * (item?.unitPrice || 0);
-              const itemDiscount = itemTotal * ((item?.discount || 0) / 100);
-              const itemAmount = itemTotal - itemDiscount;
+          {isMobile && (
+            <div className="md:hidden space-y-4">
+              {fields.map((field, index) => {
+                const item = watchItems[index];
+                const itemTotal = (item?.quantity || 0) * (item?.unitPrice || 0);
+                const itemDiscount = itemTotal * ((item?.discount || 0) / 100);
+                const itemAmount = itemTotal - itemDiscount;
 
-              return (
-                <div
-                  key={field.id}
-                  className="border border-gray-200 rounded-lg p-3 bg-gray-50"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="text-sm font-medium text-gray-700">
-                      Item #{index + 1}
-                    </span>
-                    {fields.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => remove(index)}
-                        className="p-1 text-red-500 hover:bg-red-50 rounded"
-                      >
-                        <TrashIcon className="h-4 w-4" />
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="space-y-3">
-                    {/* Description */}
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">
-                        Description
-                      </label>
-                      <input
-                        {...register(`items.${index}.description` as const, {
-                          required: "Required",
-                        })}
-                        placeholder="Item description"
-                        className="input text-sm w-full"
-                      />
+                return (
+                  <div
+                    key={field.id}
+                    className="border border-gray-200 rounded-lg p-3 bg-gray-50"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <span className="text-sm font-medium text-gray-700">
+                        Item #{index + 1}
+                      </span>
+                      {fields.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => remove(index)}
+                          className="p-1 text-red-500 hover:bg-red-50 rounded"
+                        >
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
 
-                    {/* HSN Code */}
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">
-                        HSN/SAC
-                      </label>
-                      <select
-                        {...register(`items.${index}.hsnCode` as const)}
-                        onChange={(e) => {
-                          const code = e.target.value;
-                          setValue(`items.${index}.hsnCode`, code);
-                          const selectedHsn = hsns?.find(
-                            (h: any) => h.code === code,
-                          );
-                          if (selectedHsn) {
-                            setValue(
-                              `items.${index}.taxRate`,
-                              Number(selectedHsn.taxRate),
-                            );
-                          }
-                        }}
-                        className="input text-sm w-full"
-                      >
-                        <option value="">Select HSN</option>
-                        {hsns?.map((hsn: any) => (
-                          <option key={hsn.code} value={hsn.code}>
-                            {hsn.code} - {hsn.description} ({hsn.taxRate}%)
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <div className="space-y-3">
+                      {/* Description */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">
+                          Description
+                        </label>
+                        <input
+                          {...register(`items.${index}.description` as const, {
+                            required: "Required",
+                          })}
+                          placeholder="Item description"
+                          className="input text-sm w-full"
+                        />
+                      </div>
 
-                    {/* Quantity and Unit Price Row */}
+                      {/* HSN Code */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">
+                          HSN/SAC
+                        </label>
+                        <select
+                          {...register(`items.${index}.hsnCode` as const, {
+                            onChange: (e) => {
+                              const code = e.target.value;
+                              const selectedHsn = hsns?.find(
+                                (h: any) => h.code === code,
+                              );
+                              if (selectedHsn) {
+                                setValue(
+                                  `items.${index}.taxRate`,
+                                  Number(selectedHsn.taxRate),
+                                );
+                              }
+                            },
+                          })}
+                          className="input text-sm w-full"
+                        >
+                          <option value="">Select HSN</option>
+                          {hsns?.map((hsn: any) => (
+                            <option key={hsn.code} value={hsn.code}>
+                              {hsn.code} - {hsn.description} ({hsn.taxRate}%)
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Quantity and Unit Price Row */}
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-medium text-gray-500 mb-1">
@@ -1066,7 +1076,8 @@ export default function CreateInvoice() {
               );
             })}
           </div>
-        </div>
+        )}
+      </div>
 
         {/* Summary & Additional Info */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
