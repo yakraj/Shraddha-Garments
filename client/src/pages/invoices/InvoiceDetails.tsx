@@ -428,7 +428,9 @@ export default function InvoiceDetails() {
               <div className="p-1 border-r border-black h-full">
                 {item.hsnCode || "-"}
               </div>
-              <div className="p-1 border-r border-black h-full">{item.taxRate}%</div>
+              <div className="p-1 border-r border-black h-full">
+                {item.taxRate}%
+              </div>
               <div className="p-1 border-r border-black font-bold whitespace-nowrap h-full">
                 {item.quantity} Nos
               </div>{" "}
