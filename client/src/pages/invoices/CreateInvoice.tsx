@@ -45,6 +45,7 @@ interface FormData {
   discountType: "percentage" | "fixed";
   discountValue: number;
   taxRate: number;
+  roundOff: number;
   // Transport fields
   deliveryNote?: string;
   deliveryNoteDate?: string;
@@ -132,6 +133,7 @@ export default function CreateInvoice() {
         discountType: "percentage",
         discountValue: 0,
         taxRate: 18,
+        roundOff: 0,
         deliveryNote: "",
         deliveryNoteDate: "",
         otherReference: "",
@@ -165,7 +167,9 @@ export default function CreateInvoice() {
         customerGst: invoice.customer?.gstNumber || "",
         customerPan: invoice.customer?.panNumber || "",
 
-        invoiceDate: (invoice.invoiceDate || "").split("T")[0],
+        invoiceDate: (invoice.issueDate || invoice.invoiceDate || "").split(
+          "T",
+        )[0],
         dueDate: (invoice.dueDate || "").split("T")[0],
         notes: invoice.notes || "",
         terms: invoice.terms || "",
@@ -173,6 +177,7 @@ export default function CreateInvoice() {
         discountType: invoice.discountType || "percentage",
         discountValue: invoice.discountValue || 0,
         taxRate: invoice.taxRate || 18,
+        roundOff: Number(invoice.roundOff || 0),
         deliveryNote: invoice.deliveryNote || "",
         deliveryNoteDate: invoice.deliveryNoteDate
           ? invoice.deliveryNoteDate.split("T")[0]
@@ -221,6 +226,7 @@ export default function CreateInvoice() {
         setValue("discountType", formData.discountType);
         setValue("discountValue", formData.discountValue);
         setValue("taxRate", formData.taxRate);
+        setValue("roundOff", formData.roundOff);
         setValue("deliveryNote", formData.deliveryNote);
         setValue("deliveryNoteDate", formData.deliveryNoteDate);
         setValue("otherReference", formData.otherReference);
@@ -246,6 +252,7 @@ export default function CreateInvoice() {
   const watchItems = watch("items") || [];
   const watchDiscountType = watch("discountType");
   const watchDiscountValue = watch("discountValue");
+  const watchRoundOff = watch("roundOff") || 0;
 
   // Calculate totals
   const subtotal = watchItems.reduce((sum, item) => {
@@ -268,7 +275,14 @@ export default function CreateInvoice() {
     return sum + itemTaxable * ((item.taxRate || 0) / 100);
   }, 0);
 
-  const totalAmount = taxableAmount + taxAmount;
+  const totalBeforeRoundOff = taxableAmount + taxAmount;
+  const totalAmount = totalBeforeRoundOff + watchRoundOff;
+
+  const handleRoundOff = () => {
+    const roundedTotal = Math.round(totalBeforeRoundOff);
+    const diff = roundedTotal - totalBeforeRoundOff;
+    setValue("roundOff", Number(diff.toFixed(2)));
+  };
 
   const createMutation = useMutation({
     mutationFn: (data: any) => invoicesAPI.create(data),
@@ -1154,6 +1168,31 @@ export default function CreateInvoice() {
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Tax</span>
                 <span className="font-medium">{formatCurrency(taxAmount)}</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">Round Off</span>
+                <button
+                  type="button"
+                  onClick={handleRoundOff}
+                  className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                >
+                  Auto
+                </button>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register("roundOff", { valueAsNumber: true })}
+                  className="input text-sm py-1 px-2 w-24 ml-auto"
+                />
+                <span
+                  className={`font-medium ${
+                    watchRoundOff >= 0 ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {watchRoundOff >= 0 ? "+" : ""}
+                  {formatCurrency(watchRoundOff)}
+                </span>
               </div>
 
               <div className="border-t border-gray-200 pt-3 flex justify-between">

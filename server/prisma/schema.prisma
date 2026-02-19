@@ -268,6 +268,7 @@ model Invoice {
   taxAmount       Decimal   @db.Decimal(12, 2) @default(0)
   discountRate    Decimal   @db.Decimal(5, 2) @default(0)
   discountAmount  Decimal   @db.Decimal(12, 2) @default(0)
+  roundOff        Decimal   @db.Decimal(10, 2) @default(0)
   totalAmount     Decimal   @db.Decimal(12, 2)
   paidAmount      Decimal   @db.Decimal(12, 2) @default(0)
   

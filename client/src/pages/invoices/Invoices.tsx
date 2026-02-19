@@ -204,7 +204,9 @@ export default function Invoices() {
                         </p>
                       </div>
                     </td>
-                    <td>{formatDate(invoice.invoiceDate)}</td>
+                    <td>
+                      {formatDate(invoice.issueDate || invoice.invoiceDate)}
+                    </td>
                     <td>{formatDate(invoice.dueDate)}</td>
                     <td className="font-medium">
                       {formatCurrency(invoice.totalAmount)}

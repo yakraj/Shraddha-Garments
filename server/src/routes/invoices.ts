@@ -159,10 +159,12 @@ router.post(
 
       const {
         customerId,
+        invoiceDate,
         dueDate,
         items,
         taxRate,
         discountRate,
+        roundOff,
         notes,
         terms,
         status,
@@ -219,19 +221,23 @@ router.post(
 
       const discountRateNum = Number(discountRate || 0);
       const discountAmount = subtotal * (discountRateNum / 100);
-      const totalAmount = subtotal + totalTaxAmount - discountAmount;
+      const roundOffNum = Number(roundOff || 0);
+      const totalAmount =
+        subtotal + totalTaxAmount - discountAmount + roundOffNum;
 
       const invoice = await prisma.invoice.create({
         data: {
           invoiceNumber,
           customerId,
           createdById: req.user!.id,
+          issueDate: invoiceDate ? new Date(invoiceDate) : new Date(),
           dueDate: new Date(dueDate),
           subtotal,
           taxRate: 0, // No longer used globally, but kept for schema compatibility
           taxAmount: totalTaxAmount,
           discountRate: discountRateNum,
           discountAmount,
+          roundOff: roundOffNum,
           totalAmount,
           status: status || InvoiceStatus.DRAFT,
           notes,
@@ -271,8 +277,17 @@ router.post(
 // Update invoice
 router.put("/:id", authenticate, async (req: AuthRequest, res) => {
   try {
-    const { dueDate, items, taxRate, discountRate, notes, terms, status } =
-      req.body;
+    const {
+      invoiceDate,
+      dueDate,
+      items,
+      taxRate,
+      discountRate,
+      roundOff,
+      notes,
+      terms,
+      status,
+    } = req.body;
 
     // Check if invoice can be edited
     const existingInvoice = await prisma.invoice.findUnique({
@@ -293,9 +308,11 @@ router.put("/:id", authenticate, async (req: AuthRequest, res) => {
 
     // Calculate new totals if items provided
     let updateData: any = {
+      issueDate: invoiceDate ? new Date(invoiceDate) : undefined,
       dueDate: dueDate ? new Date(dueDate) : undefined,
       taxRate,
       discountRate,
+      roundOff,
       notes,
       terms,
       status,
@@ -346,14 +363,21 @@ router.put("/:id", authenticate, async (req: AuthRequest, res) => {
           ? Number(discountRate)
           : Number(existingInvoice.discountRate);
 
+      const currentRoundOff =
+        roundOff !== undefined
+          ? Number(roundOff)
+          : Number(existingInvoice.roundOff);
+
       const discountAmount = subtotal * (currentDiscountRate / 100);
-      const totalAmount = subtotal + totalTaxAmount - discountAmount;
+      const totalAmount =
+        subtotal + totalTaxAmount - discountAmount + currentRoundOff;
 
       updateData = {
         ...updateData,
         subtotal,
         taxAmount: totalTaxAmount,
         discountAmount,
+        roundOff: currentRoundOff,
         totalAmount,
         items: {
           create: processedItems,

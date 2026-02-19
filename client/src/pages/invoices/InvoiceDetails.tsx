@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -7,12 +7,14 @@ import {
   PencilSquareIcon,
   BanknotesIcon,
   XCircleIcon,
+  ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import { invoicesAPI } from "@/lib/api";
 import { formatCurrency, formatDate, numberToWords } from "@/lib/utils";
 import PaymentModal from "./PaymentModal";
 import logo from "@/assets/logo.png";
+import { useReactToPrint } from "react-to-print";
 
 const statusColors: Record<string, string> = {
   DRAFT: "badge-gray",
@@ -28,6 +30,7 @@ export default function InvoiceDetails() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   const {
     data: invoice,
@@ -51,9 +54,10 @@ export default function InvoiceDetails() {
     },
   });
 
-  const handlePrint = () => {
-    window.print();
-  };
+  const handlePrint = useReactToPrint({
+    contentRef: invoiceRef,
+    documentTitle: `Invoice_${invoice?.invoiceNumber || "document"}`,
+  });
 
   const handleCancel = () => {
     if (window.confirm("Are you sure you want to cancel this invoice?")) {
@@ -175,10 +179,10 @@ export default function InvoiceDetails() {
           </Link>
           <button
             onClick={handlePrint}
-            className="btn btn-outline inline-flex items-center gap-2"
+            className="btn btn-primary inline-flex items-center gap-2"
           >
             <PrinterIcon className="h-5 w-5" />
-            Print
+            Download / Print
           </button>
           {invoice.status === "DRAFT" && (
             <button
@@ -192,7 +196,11 @@ export default function InvoiceDetails() {
       </div>
 
       {/* Invoice Document - Modeled after Tax Invoice Image */}
-      <div className="bg-white text-black p-4 sm:p-6 md:p-8 max-w-[210mm] mx-auto print:max-w-none print:mx-0 print:p-[10mm] print:w-[210mm] print:h-[297mm] print:shadow-none print:border-none print:flex print:flex-col">
+      <div
+        ref={invoiceRef}
+        data-invoice-container="true"
+        className="bg-white text-black p-4 sm:p-6 md:p-8 max-w-[210mm] mx-auto print:max-w-none print:mx-0 print:p-[10mm] print:w-[210mm] print:h-[297mm] print:shadow-none print:border-none print:flex print:flex-col"
+      >
         {/* Title */}
         <div className="text-center font-bold text-xl mb-2 uppercase border border-black border-b-0 p-1">
           Tax Invoice
@@ -210,13 +218,20 @@ export default function InvoiceDetails() {
                 <p className="text-xs">GSTIN/UIN: 27CRYPP2986H1ZQ</p>
                 <p className="text-xs">PAN No.: CRYPP2986H</p>
                 <p className="text-xs">State: Maharashtra, Code: 27</p>
+                <div className="mt-2 text-[10px] leading-tight border-t border-gray-200 pt-1">
+                  <p className="font-bold border-b border-gray-100 mb-0.5 inline-block">
+                    Bank Details:
+                  </p>
+                  <p>A/c Name: Shraddha Garments</p>
+                  <p>A/c No.: 5607201000297</p>
+                  <p>IFSC: CNRB0005607 (Canara Bank)</p>
+                </div>
                 {/* <p className="text-xs">E-Mail: support@shraddhagarments.com</p> */}
               </div>
               <img
                 src={logo}
-                style={{ height: "100px" }}
+                className="h-24 w-auto object-contain"
                 alt="Shraddha Garment"
-                className="w-auto object-contain"
               />
             </div>
 
@@ -254,7 +269,7 @@ export default function InvoiceDetails() {
                   Invoice Date
                 </span>
                 <span className="font-bold">
-                  {formatDate(invoice.invoiceDate)}
+                  {formatDate(invoice.issueDate || invoice.invoiceDate)}
                 </span>
               </div>
             </div>
@@ -402,85 +417,104 @@ export default function InvoiceDetails() {
           {invoice.items?.map((item: any, index: number) => (
             <div
               key={item.id}
-              className="grid grid-cols-[30px_1fr_75px_40px_65px_75px_30px_90px] text-center min-h-[40px]"
+              className="grid grid-cols-[30px_1fr_75px_40px_65px_75px_30px_90px] text-center min-h-[40px] items-start"
             >
-              <div className="p-1 border-r border-black flex items-start justify-center">
+              <div className="p-1 border-r border-black flex items-start justify-center h-full">
                 {index + 1}
               </div>
-              <div className="p-1 border-r border-black text-left font-bold leading-tight">
+              <div className="p-1 border-r border-black text-left font-bold leading-tight h-full">
                 {item.description}
               </div>
-              <div className="p-1 border-r border-black">
+              <div className="p-1 border-r border-black h-full">
                 {item.hsnCode || "-"}
               </div>
-              <div className="p-1 border-r border-black">{item.taxRate}%</div>
-              <div className="p-1 border-r border-black font-bold whitespace-nowrap">
+              <div className="p-1 border-r border-black h-full">{item.taxRate}%</div>
+              <div className="p-1 border-r border-black font-bold whitespace-nowrap h-full">
                 {item.quantity} Nos
               </div>{" "}
               {/* Assuming Nos for now */}
-              <div className="p-1 border-r border-black text-right pr-1">
+              <div className="p-1 border-r border-black text-right pr-1 h-full font-mono">
                 {formatCurrency(item.unitPrice).replace("₹", "")}
               </div>
-              <div className="p-1 border-r border-black">Nos</div>
-              <div className="p-1 font-bold text-right pr-1">
+              <div className="p-1 border-r border-black h-full">Nos</div>
+              <div className="p-1 font-bold text-right pr-1 h-full font-mono">
                 {formatCurrency(item.amount).replace("₹", "")}
               </div>
             </div>
           ))}
 
-          {/* Spacer to fill height if needed */}
-          <div className="grid grid-cols-[30px_1fr_75px_40px_65px_75px_30px_90px] flex-grow min-h-[40px]">
+          {/* Spacer to fill height if needed - Reduced min-height to prevent pushing content over the page limit */}
+          <div className="grid grid-cols-[30px_1fr_75px_40px_65px_75px_30px_90px] flex-grow min-h-[50px]">
             <div className="border-r border-black"></div>
             <div className="border-r border-black"></div>
             <div className="border-r border-black"></div>
             <div className="border-r border-black"></div>
             <div className="border-r border-black"></div>
-            <div className="border-r border-black relative">
-              <div className="absolute right-2 bottom-2 font-bold italic text-right leading-tight">
-                {hsnGroups.length === 1 ? (
-                  <>
-                    CGST {hsnGroups[0].cgstRate}%
-                    <br />
-                    SGST {hsnGroups[0].sgstRate}%
-                  </>
-                ) : (
-                  <>
-                    Output CGST <br /> Output SGST
-                  </>
-                )}
-              </div>
+            <div className="border-r border-black flex flex-col justify-end pb-2 pr-1 text-right leading-tight text-[10px]">
+              {hsnGroups.map((group: any, i: number) => (
+                <div key={i} className="font-bold">
+                  CGST {group.cgstRate}%
+                  <br />
+                  SGST {group.sgstRate}%
+                </div>
+              ))}
+              <div className="italic font-normal">Basic Amount</div>
+              {Number(invoice.roundOff) !== 0 && (
+                <div className="italic font-normal">Rounding</div>
+              )}
+              <div className="font-bold">Total Tax</div>
             </div>
-            <div className="border-r border-black"></div>
-            <div className="text-right pr-1 pt-12 flex flex-col justify-end pb-2 font-bold leading-tight">
-              <span>{formatCurrency(cgstAmount).replace("₹", "")}</span>
-              <span>{formatCurrency(sgstAmount).replace("₹", "")}</span>
+            <div className="border-r border-black"></div>{" "}
+            {/* Empty 'per' column */}
+            <div className="text-right pr-1 flex flex-col justify-end pb-2 font-bold leading-tight text-[10px]">
+              {hsnGroups.map((group: any, i: number) => (
+                <div key={i}>
+                  <span>
+                    {formatCurrency(group.cgstAmount).replace("₹", "")}
+                  </span>
+                  <br />
+                  <span>
+                    {formatCurrency(group.sgstAmount).replace("₹", "")}
+                  </span>
+                </div>
+              ))}
+              <span>
+                {formatCurrency(
+                  Number(invoice.subtotal) - Number(invoice.discountAmount),
+                ).replace("₹", "")}
+              </span>
+              {Number(invoice.roundOff) !== 0 && (
+                <span>
+                  {Number(invoice.roundOff) > 0 ? "+" : ""}
+                  {formatCurrency(invoice.roundOff).replace("₹", "")}
+                </span>
+              )}
+              <span>{formatCurrency(invoice.taxAmount).replace("₹", "")}</span>
             </div>
           </div>
 
           {/* Total */}
-          <div className="grid grid-cols-[30px_1fr_75px_40px_65px_75px_30px_90px] border-t border-black font-bold">
-            <div className="col-span-2 text-right pr-2">Total</div>
-            <div className="border-l border-r border-black text-center">
-              {/* Optional: HSN Total space */}
-            </div>
-            <div className="border-r border-black text-center"></div>
-            <div className="border-r border-black text-center whitespace-nowrap">
+          <div className="grid grid-cols-[30px_1fr_75px_40px_65px_75px_30px_90px] border-t border-black font-bold h-10 items-center bg-gray-50 print:bg-white text-xs">
+            <div className="col-span-2 text-right pr-2">Document Total</div>
+            <div className="border-l border-r border-black h-full"></div>
+            <div className="border-r border-black h-full"></div>
+            <div className="border-r border-black h-full flex items-center justify-center whitespace-nowrap">
               {invoice.items?.reduce(
                 (sum: number, item: any) => sum + Number(item.quantity),
                 0,
               )}{" "}
               Nos
             </div>
-            <div className="border-r border-black"></div> {/* Rate */}
-            <div className="border-r border-black"></div> {/* Per */}
-            <div className="text-right pr-1 text-sm bg-gray-50 print:bg-white whitespace-nowrap">
+            <div className="border-r border-black h-full"></div> {/* Rate */}
+            <div className="border-r border-black h-full"></div> {/* Per */}
+            <div className="text-right pr-1 h-full flex items-center justify-end whitespace-nowrap font-mono">
               ₹ {formatCurrency(invoice.totalAmount).replace("₹", "")}
             </div>
           </div>
         </div>
 
         {/* Amount in Words */}
-        <div className="border border-black border-t-0 p-1 border-b">
+        <div className="border border-black border-t-0 p-1">
           <div className="flex items-center text-[10px]">
             <span className="text-gray-600 mr-2 whitespace-nowrap">
               Amount Chargeable (in words) :
@@ -563,7 +597,7 @@ export default function InvoiceDetails() {
           </div>
         </div>
 
-        <div className="border border-black border-t-0 p-1 border-b">
+        <div className="border border-black border-t-0 p-1">
           <div className="flex items-center text-[10px]">
             <span className="text-gray-600 mr-2 whitespace-nowrap">
               Tax Amount (in words) :{" "}
@@ -611,9 +645,9 @@ export default function InvoiceDetails() {
           </div>
         </div>
 
-        <div className="text-center text-xs mt-1">
+        {/* <div className="text-center text-xs mt-1">
           This is a Computer Generated Invoice
-        </div>
+        </div> */}
       </div>
 
       {/* Payment Modal */}

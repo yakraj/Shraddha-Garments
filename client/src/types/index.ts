@@ -214,6 +214,7 @@ export interface Invoice {
   status: InvoiceStatus;
   notes?: string;
   terms?: string;
+  gstEnabled: boolean;
   // Transport & Delivery Details
   deliveryNote?: string;
   deliveryNoteDate?: string;
