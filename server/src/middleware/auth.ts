@@ -14,7 +14,7 @@ export interface AuthRequest extends Request {
 export const authenticate = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];

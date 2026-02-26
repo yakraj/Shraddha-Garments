@@ -143,10 +143,10 @@ router.get("/today", authenticate, async (req, res) => {
     });
 
     const present = attendances.filter(
-      (a) => a.status === AttendanceStatus.PRESENT
+      (a) => a.status === AttendanceStatus.PRESENT,
     ).length;
     const late = attendances.filter(
-      (a) => a.status === AttendanceStatus.LATE
+      (a) => a.status === AttendanceStatus.LATE,
     ).length;
     const absent = totalEmployees - attendances.length;
 
@@ -160,7 +160,7 @@ router.get("/today", authenticate, async (req, res) => {
           late,
           absent,
           onLeave: attendances.filter(
-            (a) => a.status === AttendanceStatus.ON_LEAVE
+            (a) => a.status === AttendanceStatus.ON_LEAVE,
           ).length,
         },
       },
@@ -233,7 +233,7 @@ router.post(
       console.error("Mark attendance error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Bulk mark attendance
@@ -278,7 +278,7 @@ router.post(
               notes: record.notes,
             },
           });
-        })
+        }),
       );
 
       res.json({
@@ -290,7 +290,7 @@ router.post(
       console.error("Bulk attendance error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Get attendance report

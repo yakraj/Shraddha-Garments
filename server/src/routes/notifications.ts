@@ -124,7 +124,7 @@ router.post(
       console.error("Create notification error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Broadcast notification to all users
@@ -174,7 +174,7 @@ router.post(
       console.error("Broadcast notification error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 export default router;

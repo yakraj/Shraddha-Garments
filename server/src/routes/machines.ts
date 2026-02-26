@@ -131,7 +131,7 @@ router.post(
       });
       const nextId = lastMachine
         ? String(
-            parseInt(lastMachine.machineCode.replace("MCH", "")) + 1
+            parseInt(lastMachine.machineCode.replace("MCH", "")) + 1,
           ).padStart(4, "0")
         : "0001";
       const machineCode = `MCH${nextId}`;
@@ -155,7 +155,7 @@ router.post(
       console.error("Create machine error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Update machine
@@ -197,7 +197,7 @@ router.put(
       console.error("Update machine error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Delete machine
@@ -213,7 +213,7 @@ router.delete(
       console.error("Delete machine error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Assign employee to machine
@@ -261,7 +261,7 @@ router.post(
       console.error("Assign machine error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Unassign employee from machine
@@ -286,7 +286,7 @@ router.post(
       console.error("Unassign machine error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Add maintenance log
@@ -330,7 +330,7 @@ router.post(
       console.error("Add maintenance log error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Get machine status summary

@@ -109,7 +109,7 @@ router.post(
       });
       const nextId = lastMaterial
         ? String(
-            parseInt(lastMaterial.materialCode.replace("MAT", "")) + 1
+            parseInt(lastMaterial.materialCode.replace("MAT", "")) + 1,
           ).padStart(4, "0")
         : "0001";
       const materialCode = `MAT${nextId}`;
@@ -139,7 +139,7 @@ router.post(
       console.error("Create material error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Update material
@@ -179,7 +179,7 @@ router.put(
       console.error("Update material error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Delete material
@@ -195,7 +195,7 @@ router.delete(
       console.error("Delete material error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Update quantity (add/remove stock)
@@ -275,7 +275,7 @@ router.post(
       console.error("Material transaction error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Get categories

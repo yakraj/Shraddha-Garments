@@ -199,7 +199,7 @@ router.post(
       });
       const nextId = lastEmployee
         ? String(
-            parseInt(lastEmployee.employeeId.replace("EMP", "")) + 1
+            parseInt(lastEmployee.employeeId.replace("EMP", "")) + 1,
           ).padStart(4, "0")
         : "0001";
       const employeeId = `EMP${nextId}`;
@@ -245,7 +245,7 @@ router.post(
       console.error("Create employee error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Update employee
@@ -303,7 +303,7 @@ router.put(
       console.error("Update employee error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Delete employee
@@ -332,7 +332,7 @@ router.delete(
       console.error("Delete employee error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Get departments

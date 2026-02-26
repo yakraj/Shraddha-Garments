@@ -190,7 +190,7 @@ router.post(
       console.error("Create purchase order error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Update purchase order
@@ -222,15 +222,13 @@ router.put(
 
       if (
         [POStatus.RECEIVED, POStatus.CANCELLED].includes(
-          existingPO.status as POStatus
+          existingPO.status as POStatus,
         )
       ) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Cannot edit completed or cancelled PO",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Cannot edit completed or cancelled PO",
+        });
       }
 
       let updateData: any = {
@@ -289,7 +287,7 @@ router.put(
       console.error("Update purchase order error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Delete purchase order
@@ -324,7 +322,7 @@ router.delete(
       console.error("Delete purchase order error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Receive items
@@ -410,7 +408,7 @@ router.post(
       console.error("Receive items error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Approve purchase order
@@ -446,7 +444,7 @@ router.post(
       console.error("Approve PO error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Get PO summary

@@ -155,7 +155,7 @@ router.get("/revenue", authenticate, async (req, res) => {
         paid: acc.paid + Number(inv.paidAmount),
         count: acc.count + 1,
       }),
-      { total: 0, paid: 0, count: 0 }
+      { total: 0, paid: 0, count: 0 },
     );
 
     res.json({
@@ -211,10 +211,13 @@ router.get("/attendance", authenticate, async (req, res) => {
     });
 
     // Overall stats
-    const stats = attendances.reduce((acc, att) => {
-      acc[att.status] = (acc[att.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const stats = attendances.reduce(
+      (acc, att) => {
+        acc[att.status] = (acc[att.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     res.json({
       success: true,
@@ -252,10 +255,13 @@ router.get("/machines", authenticate, async (req, res) => {
       },
     });
 
-    const statusCount = machines.reduce((acc, m) => {
-      acc[m.status] = (acc[m.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const statusCount = machines.reduce(
+      (acc, m) => {
+        acc[m.status] = (acc[m.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     const efficiency = {
       running: statusCount[MachineStatus.RUNNING] || 0,
@@ -295,28 +301,34 @@ router.get("/inventory", authenticate, async (req, res) => {
       orderBy: { quantity: "asc" },
     });
 
-    const byCategory = materials.reduce((acc, m) => {
-      if (!acc[m.category]) {
-        acc[m.category] = { count: 0, totalValue: 0, items: [] };
-      }
-      acc[m.category].count++;
-      acc[m.category].totalValue += Number(m.quantity) * Number(m.unitPrice);
-      acc[m.category].items.push(m);
-      return acc;
-    }, {} as Record<string, any>);
+    const byCategory = materials.reduce(
+      (acc, m) => {
+        if (!acc[m.category]) {
+          acc[m.category] = { count: 0, totalValue: 0, items: [] };
+        }
+        acc[m.category].count++;
+        acc[m.category].totalValue += Number(m.quantity) * Number(m.unitPrice);
+        acc[m.category].items.push(m);
+        return acc;
+      },
+      {} as Record<string, any>,
+    );
 
-    const statusCount = materials.reduce((acc, m) => {
-      acc[m.status] = (acc[m.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const statusCount = materials.reduce(
+      (acc, m) => {
+        acc[m.status] = (acc[m.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     const lowStockItems = materials.filter(
-      (m) => m.status === "LOW_STOCK" || m.status === "OUT_OF_STOCK"
+      (m) => m.status === "LOW_STOCK" || m.status === "OUT_OF_STOCK",
     );
 
     const totalValue = materials.reduce(
       (sum, m) => sum + Number(m.quantity) * Number(m.unitPrice),
-      0
+      0,
     );
 
     res.json({
@@ -368,7 +380,7 @@ router.get("/productivity", authenticate, async (req, res) => {
       const presentDays = emp.attendances.filter(
         (a) =>
           a.status === AttendanceStatus.PRESENT ||
-          a.status === AttendanceStatus.LATE
+          a.status === AttendanceStatus.LATE,
       ).length;
       const attendanceRate =
         totalDays > 0 ? ((presentDays / totalDays) * 100).toFixed(2) : 0;
@@ -449,7 +461,7 @@ router.get("/financial", authenticate, async (req, res) => {
       invoiced: invoices.reduce((sum, inv) => sum + Number(inv.totalAmount), 0),
       expenses: purchaseOrders.reduce(
         (sum, po) => sum + Number(po.totalAmount),
-        0
+        0,
       ),
     };
 

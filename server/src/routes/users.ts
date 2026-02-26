@@ -64,7 +64,7 @@ router.get(
       console.error("Get users error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Get user by ID
@@ -156,7 +156,7 @@ router.put(
       console.error("Update user error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Delete user (Admin only)
@@ -172,7 +172,7 @@ router.delete(
       console.error("Delete user error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 export default router;

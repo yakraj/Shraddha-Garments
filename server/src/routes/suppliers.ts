@@ -112,7 +112,7 @@ router.post(
       });
       const nextId = lastSupplier
         ? String(
-            parseInt(lastSupplier.supplierCode.replace("SUP", "")) + 1
+            parseInt(lastSupplier.supplierCode.replace("SUP", "")) + 1,
           ).padStart(4, "0")
         : "0001";
       const supplierCode = `SUP${nextId}`;
@@ -139,7 +139,7 @@ router.post(
       console.error("Create supplier error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Update supplier
@@ -187,7 +187,7 @@ router.put(
       console.error("Update supplier error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Delete supplier
@@ -203,7 +203,7 @@ router.delete(
       console.error("Delete supplier error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 export default router;

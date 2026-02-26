@@ -12,10 +12,13 @@ router.get("/", authenticate, async (req, res) => {
     const settings = await prisma.setting.findMany();
 
     // Convert to key-value object
-    const settingsObj = settings.reduce((acc, s) => {
-      acc[s.key] = s.value;
-      return acc;
-    }, {} as Record<string, any>);
+    const settingsObj = settings.reduce(
+      (acc, s) => {
+        acc[s.key] = s.value;
+        return acc;
+      },
+      {} as Record<string, any>,
+    );
 
     res.json({ success: true, data: settingsObj });
   } catch (error) {
@@ -64,7 +67,7 @@ router.put(
       console.error("Update setting error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Bulk update settings
@@ -84,8 +87,8 @@ router.put("/", authenticate, authorize(UserRole.ADMIN), async (req, res) => {
           where: { key },
           update: { value: value as any },
           create: { key, value: value as any },
-        })
-      )
+        }),
+      ),
     );
 
     res.json({ success: true, data: results, message: "Settings updated" });
@@ -108,7 +111,7 @@ router.delete(
       console.error("Delete setting error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Get company info
@@ -120,11 +123,14 @@ router.get("/company/info", authenticate, async (req, res) => {
       },
     });
 
-    const company = companySettings.reduce((acc, s) => {
-      const key = s.key.replace("company_", "");
-      acc[key] = (s.value as any)[key] || s.value;
-      return acc;
-    }, {} as Record<string, any>);
+    const company = companySettings.reduce(
+      (acc, s) => {
+        const key = s.key.replace("company_", "");
+        acc[key] = (s.value as any)[key] || s.value;
+        return acc;
+      },
+      {} as Record<string, any>,
+    );
 
     res.json({ success: true, data: company });
   } catch (error) {

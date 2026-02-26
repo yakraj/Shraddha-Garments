@@ -143,7 +143,7 @@ router.post(
       });
       const nextId = lastMeasurement
         ? String(
-            parseInt(lastMeasurement.measurementCode.replace("MSR", "")) + 1
+            parseInt(lastMeasurement.measurementCode.replace("MSR", "")) + 1,
           ).padStart(5, "0")
         : "00001";
       const measurementCode = `MSR${nextId}`;
@@ -195,7 +195,7 @@ router.post(
       console.error("Create measurement error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Update measurement
@@ -282,7 +282,7 @@ router.delete(
       console.error("Delete measurement error:", error);
       res.status(500).json({ success: false, message: "Server error" });
     }
-  }
+  },
 );
 
 // Get garment types
