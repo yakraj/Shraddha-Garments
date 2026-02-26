@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { PrismaClient, UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
+import prisma from "../lib/prisma.js";
 import { body, validationResult } from "express-validator";
 import { authenticate, authorize, AuthRequest } from "../middleware/auth.js";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // Get user notifications
 router.get("/", authenticate, async (req: AuthRequest, res) => {

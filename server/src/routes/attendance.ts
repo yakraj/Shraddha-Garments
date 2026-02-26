@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { PrismaClient, UserRole, AttendanceStatus } from "@prisma/client";
+import { UserRole, AttendanceStatus } from "@prisma/client";
+import prisma from "../lib/prisma.js";
 import { body, validationResult } from "express-validator";
 import { authenticate, authorize, AuthRequest } from "../middleware/auth.js";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // Get attendance records
 router.get("/", authenticate, async (req, res) => {

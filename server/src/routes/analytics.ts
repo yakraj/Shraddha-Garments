@@ -1,15 +1,14 @@
 import { Router } from "express";
 import {
-  PrismaClient,
   InvoiceStatus,
   POStatus,
   AttendanceStatus,
   MachineStatus,
 } from "@prisma/client";
+import prisma from "../lib/prisma.js";
 import { authenticate, AuthRequest } from "../middleware/auth.js";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // Dashboard overview
 router.get("/dashboard", authenticate, async (req, res) => {

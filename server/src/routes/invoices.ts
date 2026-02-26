@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { PrismaClient, UserRole, InvoiceStatus } from "@prisma/client";
+import { UserRole, InvoiceStatus } from "@prisma/client";
+import prisma from "../lib/prisma.js";
 import { body, validationResult } from "express-validator";
 import { authenticate, authorize, AuthRequest } from "../middleware/auth.js";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // Get all invoices
 router.get("/", authenticate, async (req, res) => {

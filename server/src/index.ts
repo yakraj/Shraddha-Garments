@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { PrismaClient } from "@prisma/client";
+import prisma from "./lib/prisma.js";
 
 // Import routes
 import authRoutes from "./routes/auth.js";
@@ -24,7 +24,6 @@ import fabricRoutes from "./routes/fabrics.js";
 dotenv.config();
 
 const app = express();
-const prisma = new PrismaClient();
 const PORT = process.env.PORT || 5000;
 
 // Middleware

@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../lib/prisma.js";
 import { upload } from "../middleware/upload.js";
 import { uploadToCloudinary } from "../lib/cloudinary.js";
 import fs from "fs";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // Get all fabric types
 router.get("/", async (req, res) => {
